@@ -89,7 +89,7 @@ namespace EDStatus_Feeder
                 { "in_srv", this.lblInSRV },
                 { "analysis_mode", this.lblAnalysisMode },
                 { "nightvision", this.lblNightvision },
-                { "alt_from_avg_radius", this.lblUnknown },
+                { "alt_from_avg_radius", this.lblOrbitalCruise },
                 { "fsd_jump", this.lblFSDActivating },
                 { "srv_high_beam", this.lblSRVHighBeam }
             };
@@ -125,10 +125,33 @@ namespace EDStatus_Feeder
                 { "in_srv", this.cmbInSRV },
                 { "analysis_mode", this.cmbAnalysisMode },
                 { "nightvision", this.cmbNightvision },
-                { "alt_from_avg_radius", this.cmbUnknown },
+                { "alt_from_avg_radius", this.cmbOrbitalCruise },
                 { "fsd_jump", this.cmbFSDActivating },
                 { "srv_high_beam", this.cmbSRVHighBeam }
             };
+
+            List<int> available = AvailableDevices();
+            if (Configuration.Data.DeviceId > 0 && !available.Contains(Configuration.Data.DeviceId))
+            {
+                available.Add(Configuration.Data.DeviceId);
+                available.Sort();
+            }
+            _targetItems.Clear();
+            TargetDeviceItem selectedItem = null;
+            foreach (int i in available)
+            {
+                TargetDeviceItem item = new TargetDeviceItem(i);
+                _targetItems.Add(item);
+                if (i == Configuration.Data.DeviceId)
+                    selectedItem = item;
+            }
+            cmbTarget.DataSource = new BindingSource(_targetItems, null);
+            cmbTarget.DisplayMember = "Text";
+            cmbTarget.ValueMember = "Value";
+            if (selectedItem != null)
+                cmbTarget.SelectedItem = selectedItem;
+
+            UpdateButtons(Configuration.Data);
         }
 
         private List<int> AvailableDevices()
@@ -162,29 +185,6 @@ namespace EDStatus_Feeder
         private void ConfigurationDialog_Show(object sender, EventArgs e)
         {
             btnApply.Focus();
-            List<int> available = AvailableDevices();
-            if (Configuration.Data.DeviceId > 0 && !available.Contains(Configuration.Data.DeviceId))
-            {
-                available.Add(Configuration.Data.DeviceId);
-                available.Sort();
-            }
-            _targetItems.Clear();
-            TargetDeviceItem selectedItem = null;
-            foreach (int i in available)
-            {
-                TargetDeviceItem item = new TargetDeviceItem(i);
-                _targetItems.Add(item);
-                if (i == Configuration.Data.DeviceId)
-                    selectedItem = item;
-            }
-            cmbTarget.DataSource = new BindingSource(_targetItems, null);
-            cmbTarget.DisplayMember = "Text";
-            cmbTarget.ValueMember = "Value";
-            if (selectedItem != null)
-                cmbTarget.SelectedItem = selectedItem;
-
-            UpdateButtons(Configuration.Data);
-
             StatusChanged();
             EDStatusMonitor.MonitorInstance.Changed += StatusChanged;
         }

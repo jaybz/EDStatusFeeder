@@ -36,8 +36,8 @@
             this.lblSRVHighBeam = new System.Windows.Forms.Label();
             this.cmbFSDActivating = new System.Windows.Forms.ComboBox();
             this.lblFSDActivating = new System.Windows.Forms.Label();
-            this.cmbUnknown = new System.Windows.Forms.ComboBox();
-            this.lblUnknown = new System.Windows.Forms.Label();
+            this.cmbOrbitalCruise = new System.Windows.Forms.ComboBox();
+            this.lblOrbitalCruise = new System.Windows.Forms.Label();
             this.lblDocked = new System.Windows.Forms.Label();
             this.cmbDocked = new System.Windows.Forms.ComboBox();
             this.lblLanded = new System.Windows.Forms.Label();
@@ -127,8 +127,8 @@
             this.groupBox1.Controls.Add(this.lblSRVHighBeam);
             this.groupBox1.Controls.Add(this.cmbFSDActivating);
             this.groupBox1.Controls.Add(this.lblFSDActivating);
-            this.groupBox1.Controls.Add(this.cmbUnknown);
-            this.groupBox1.Controls.Add(this.lblUnknown);
+            this.groupBox1.Controls.Add(this.cmbOrbitalCruise);
+            this.groupBox1.Controls.Add(this.lblOrbitalCruise);
             this.groupBox1.Controls.Add(this.lblDocked);
             this.groupBox1.Controls.Add(this.cmbDocked);
             this.groupBox1.Controls.Add(this.lblLanded);
@@ -230,23 +230,24 @@
             this.lblFSDActivating.TabIndex = 5;
             this.lblFSDActivating.Text = "FSD Activating";
             // 
-            // cmbUnknown
+            // cmbOrbitalCruise
             // 
-            this.cmbUnknown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbUnknown.FormattingEnabled = true;
-            this.cmbUnknown.Location = new System.Drawing.Point(329, 346);
-            this.cmbUnknown.Name = "cmbUnknown";
-            this.cmbUnknown.Size = new System.Drawing.Size(103, 21);
-            this.cmbUnknown.TabIndex = 9;
+            this.cmbOrbitalCruise.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbOrbitalCruise.FormattingEnabled = true;
+            this.cmbOrbitalCruise.Location = new System.Drawing.Point(329, 346);
+            this.cmbOrbitalCruise.Name = "cmbOrbitalCruise";
+            this.cmbOrbitalCruise.Size = new System.Drawing.Size(103, 21);
+            this.cmbOrbitalCruise.TabIndex = 9;
             // 
-            // lblUnknown
+            // lblOrbitalCruise
             // 
-            this.lblUnknown.AutoSize = true;
-            this.lblUnknown.Location = new System.Drawing.Point(232, 349);
-            this.lblUnknown.Name = "lblUnknown";
-            this.lblUnknown.Size = new System.Drawing.Size(76, 13);
-            this.lblUnknown.TabIndex = 6;
-            this.lblUnknown.Text = "Unknown Flag";
+            this.lblOrbitalCruise.AutoSize = true;
+            this.lblOrbitalCruise.Location = new System.Drawing.Point(232, 349);
+            this.lblOrbitalCruise.Name = "lblOrbitalCruise";
+            this.lblOrbitalCruise.Size = new System.Drawing.Size(69, 13);
+            this.lblOrbitalCruise.TabIndex = 6;
+            this.lblOrbitalCruise.Text = "Orbital Cruise";
+            this.lblOrbitalCruise.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // lblDocked
             // 
@@ -631,9 +632,9 @@
             this.lblLatLong.AutoSize = true;
             this.lblLatLong.Location = new System.Drawing.Point(232, 147);
             this.lblLatLong.Name = "lblLatLong";
-            this.lblLatLong.Size = new System.Drawing.Size(95, 13);
+            this.lblLatLong.Size = new System.Drawing.Size(79, 13);
             this.lblLatLong.TabIndex = 2;
-            this.lblLatLong.Text = "Latitude Longitude";
+            this.lblLatLong.Text = "Planetary Flight";
             // 
             // cmbLatLong
             // 
@@ -898,8 +899,8 @@
         private System.Windows.Forms.Label lblSRVHighBeam;
         private System.Windows.Forms.ComboBox cmbFSDActivating;
         private System.Windows.Forms.Label lblFSDActivating;
-        private System.Windows.Forms.ComboBox cmbUnknown;
-        private System.Windows.Forms.Label lblUnknown;
+        private System.Windows.Forms.ComboBox cmbOrbitalCruise;
+        private System.Windows.Forms.Label lblOrbitalCruise;
         private System.Windows.Forms.Button btnAutoSelect;
     }
 }
