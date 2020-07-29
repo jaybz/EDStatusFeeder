@@ -34,8 +34,8 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cmbSRVHighBeam = new System.Windows.Forms.ComboBox();
             this.lblSRVHighBeam = new System.Windows.Forms.Label();
-            this.cmbJumping = new System.Windows.Forms.ComboBox();
-            this.lblJumping = new System.Windows.Forms.Label();
+            this.cmbFSDActivating = new System.Windows.Forms.ComboBox();
+            this.lblFSDActivating = new System.Windows.Forms.Label();
             this.cmbUnknown = new System.Windows.Forms.ComboBox();
             this.lblUnknown = new System.Windows.Forms.Label();
             this.lblDocked = new System.Windows.Forms.Label();
@@ -125,8 +125,8 @@
             // 
             this.groupBox1.Controls.Add(this.cmbSRVHighBeam);
             this.groupBox1.Controls.Add(this.lblSRVHighBeam);
-            this.groupBox1.Controls.Add(this.cmbJumping);
-            this.groupBox1.Controls.Add(this.lblJumping);
+            this.groupBox1.Controls.Add(this.cmbFSDActivating);
+            this.groupBox1.Controls.Add(this.lblFSDActivating);
             this.groupBox1.Controls.Add(this.cmbUnknown);
             this.groupBox1.Controls.Add(this.lblUnknown);
             this.groupBox1.Controls.Add(this.lblDocked);
@@ -212,23 +212,23 @@
             this.lblSRVHighBeam.TabIndex = 4;
             this.lblSRVHighBeam.Text = "SRV High Beam";
             // 
-            // cmbJumping
+            // cmbFSDActivating
             // 
-            this.cmbJumping.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbJumping.FormattingEnabled = true;
-            this.cmbJumping.Location = new System.Drawing.Point(329, 372);
-            this.cmbJumping.Name = "cmbJumping";
-            this.cmbJumping.Size = new System.Drawing.Size(103, 21);
-            this.cmbJumping.TabIndex = 8;
+            this.cmbFSDActivating.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFSDActivating.FormattingEnabled = true;
+            this.cmbFSDActivating.Location = new System.Drawing.Point(329, 372);
+            this.cmbFSDActivating.Name = "cmbFSDActivating";
+            this.cmbFSDActivating.Size = new System.Drawing.Size(103, 21);
+            this.cmbFSDActivating.TabIndex = 8;
             // 
-            // lblJumping
+            // lblFSDActivating
             // 
-            this.lblJumping.AutoSize = true;
-            this.lblJumping.Location = new System.Drawing.Point(232, 374);
-            this.lblJumping.Name = "lblJumping";
-            this.lblJumping.Size = new System.Drawing.Size(46, 13);
-            this.lblJumping.TabIndex = 5;
-            this.lblJumping.Text = "Jumping";
+            this.lblFSDActivating.AutoSize = true;
+            this.lblFSDActivating.Location = new System.Drawing.Point(232, 374);
+            this.lblFSDActivating.Name = "lblFSDActivating";
+            this.lblFSDActivating.Size = new System.Drawing.Size(78, 13);
+            this.lblFSDActivating.TabIndex = 5;
+            this.lblFSDActivating.Text = "FSD Activating";
             // 
             // cmbUnknown
             // 
@@ -896,8 +896,8 @@
         private System.Windows.Forms.ComboBox cmbInFighter;
         private System.Windows.Forms.ComboBox cmbSRVHighBeam;
         private System.Windows.Forms.Label lblSRVHighBeam;
-        private System.Windows.Forms.ComboBox cmbJumping;
-        private System.Windows.Forms.Label lblJumping;
+        private System.Windows.Forms.ComboBox cmbFSDActivating;
+        private System.Windows.Forms.Label lblFSDActivating;
         private System.Windows.Forms.ComboBox cmbUnknown;
         private System.Windows.Forms.Label lblUnknown;
         private System.Windows.Forms.Button btnAutoSelect;

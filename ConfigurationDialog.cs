@@ -90,7 +90,7 @@ namespace EDStatus_Feeder
                 { "analysis_mode", this.lblAnalysisMode },
                 { "nightvision", this.lblNightvision },
                 { "alt_from_avg_radius", this.lblUnknown },
-                { "fsd_jump", this.lblJumping },
+                { "fsd_jump", this.lblFSDActivating },
                 { "srv_high_beam", this.lblSRVHighBeam }
             };
 
@@ -126,7 +126,7 @@ namespace EDStatus_Feeder
                 { "analysis_mode", this.cmbAnalysisMode },
                 { "nightvision", this.cmbNightvision },
                 { "alt_from_avg_radius", this.cmbUnknown },
-                { "fsd_jump", this.cmbJumping },
+                { "fsd_jump", this.cmbFSDActivating },
                 { "srv_high_beam", this.cmbSRVHighBeam }
             };
         }
