@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -93,17 +94,24 @@ namespace EDStatus_Feeder
             }
         }
 
-        private static void StatusFileChanged(object sender, FileSystemEventArgs e)
+        private static void StatusFileChanged(object sender, FileSystemEventArgs eventArgs)
         {
-            UpdateFlags();
-            MonitorInstance.Changed?.Invoke();
+            try
+            {
+                UpdateFlags();
+                MonitorInstance.Changed?.Invoke();
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.Message);
+            }
         }
 
         private static void UpdateFlags()
         {
             Thread.Sleep(10);
             string statusJson = "";
-            int retries = 3;
+            int retries = 30;
             while (retries > 0)
             {
                 try
@@ -120,8 +128,7 @@ namespace EDStatus_Feeder
 
             if (retries == 0)
             {
-                System.Diagnostics.Debug.WriteLine("Could not read flags.");
-                return;
+                throw new EDStatusMonitorException("Could not read flags.");
             }
 
             JObject status = JObject.Parse(statusJson);
