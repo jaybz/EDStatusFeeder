@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -9,16 +10,49 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using vJoyInterfaceWrap;
 
-namespace EDStatus_Feeder
+namespace EDStatusFeeder
 {
     public partial class ConfigurationDialog : Form
     {
-        vJoy vjoy = new vJoy();
-        Dictionary<string, Label> _flagLabels;
-        Dictionary<string, ComboBox> _flagSelections;
-        List<TargetDeviceItem> _targetItems = new List<TargetDeviceItem>();
-        List<ButtonItem> _buttonItems = new List<ButtonItem>();
-        Dictionary<string, int> _selectedButtons = new Dictionary<string, int>()
+        readonly vJoy vjoy = new vJoy();
+        readonly List<TargetDeviceItem> targetItems = new List<TargetDeviceItem>();
+        readonly List<ButtonItem> buttonItems = new List<ButtonItem>();
+        readonly List<ButtonSelection> gridItems = new List<ButtonSelection>()
+        {
+            new ButtonSelection("docked", "Docked"),
+            new ButtonSelection("landed", "Landed"),
+            new ButtonSelection("landing_gear", "Landing Gear"),
+            new ButtonSelection("shields", "Shields"),
+            new ButtonSelection("supercruise", "Supercruise"),
+            new ButtonSelection("fa_off", "Flight Assist"),
+            new ButtonSelection("hardpoints", "Hardpoints"),
+            new ButtonSelection("wing", "Wing"),
+            new ButtonSelection("lights", "Lights"),
+            new ButtonSelection("cargo_scoop", "Cargo Scoop"),
+            new ButtonSelection("silent_run", "Silent Running"),
+            new ButtonSelection("fuel_scoop", "Fuel Scoop"),
+            new ButtonSelection("srv_brake", "SRV Handbrake"),
+            new ButtonSelection("srv_turret", "SRV Turret"),
+            new ButtonSelection("srv_board", "SRV Turret Allowed"),
+            new ButtonSelection("srv_da", "SRV Drive Assist"),
+            new ButtonSelection("fsd_masslock", "Mass Locked"),
+            new ButtonSelection("fsd_charge", "FSD Charging"),
+            new ButtonSelection("fsd_cool", "FSD Cooldown"),
+            new ButtonSelection("low_fuel", "Low Fuel"),
+            new ButtonSelection("overheat", "Overheating"),
+            new ButtonSelection("has_lat_long", "Planetary Flight"),
+            new ButtonSelection("in_danger", "In Danger"),
+            new ButtonSelection("interdiction", "Interdiction"),
+            new ButtonSelection("in_ship", "In Main Ship"),
+            new ButtonSelection("in_fighter", "In Fighter"),
+            new ButtonSelection("in_srv", "In SRV"),
+            new ButtonSelection("analysis_mode", "Analysis Mode"),
+            new ButtonSelection("nightvision", "Night Vision"),
+            new ButtonSelection("alt_from_avg_radius", "Orbital Cruise"),
+            new ButtonSelection("fsd_jump", "FSD Activating"),
+            new ButtonSelection("srv_high_beam", "SRV High Beam"),
+        };
+        readonly Dictionary<string, int> selectedButtons = new Dictionary<string, int>()
             {
                 { "docked", 0 },
                 { "landed", 0 },
@@ -58,100 +92,31 @@ namespace EDStatus_Feeder
         {
             InitializeComponent();
 
-            this._flagLabels = new Dictionary<string, Label>()
-            {
-                { "docked", this.lblDocked },
-                { "landed", this.lblLanded },
-                { "landing_gear", this.lblLandingGear },
-                { "shields", this.lblShields },
-                { "supercruise", this.lblSupercruise },
-                { "fa_off", this.lblFlightAssist },
-                { "hardpoints", this.lblHardpoints },
-                { "wing", this.lblWing },
-                { "lights", this.lblLights },
-                { "cargo_scoop", this.lblCargoScoop },
-                { "silent_run", this.lblSilentRunning },
-                { "fuel_scoop", this.lblFuelScoop },
-                { "srv_brake", this.lblSRVHandbrake },
-                { "srv_turret", this.lblSRVTurret },
-                { "srv_board", this.lblSRVTurretAllowed },
-                { "srv_da", this.lblSRVDriveAssist },
-                { "fsd_masslock", this.lblMassLocked },
-                { "fsd_charge", this.lblFSDCharging },
-                { "fsd_cool", this.lblFSDCooldown },
-                { "low_fuel", this.lblLowFuel },
-                { "overheat", this.lblOverheating },
-                { "has_lat_long", this.lblLatLong },
-                { "in_danger", this.lblDanger },
-                { "interdiction", this.lblInterdiction },
-                { "in_ship", this.lblInMainShip },
-                { "in_fighter", this.lblInFighter },
-                { "in_srv", this.lblInSRV },
-                { "analysis_mode", this.lblAnalysisMode },
-                { "nightvision", this.lblNightvision },
-                { "alt_from_avg_radius", this.lblOrbitalCruise },
-                { "fsd_jump", this.lblFSDActivating },
-                { "srv_high_beam", this.lblSRVHighBeam }
-            };
-
-            this._flagSelections = new Dictionary<string, ComboBox>()
-            {
-                { "docked", this.cmbDocked },
-                { "landed", this.cmbLanded },
-                { "landing_gear", this.cmbLandingGear },
-                { "shields", this.cmbShields },
-                { "supercruise", this.cmbSupercruise },
-                { "fa_off", this.cmbFlightAssist },
-                { "hardpoints", this.cmbHardpoints },
-                { "wing", this.cmbWing },
-                { "lights", this.cmbLights },
-                { "cargo_scoop", this.cmbCargoScoop },
-                { "silent_run", this.cmbSilentRunning },
-                { "fuel_scoop", this.cmbFuelScoop },
-                { "srv_brake", this.cmbSRVHandbrake },
-                { "srv_turret", this.cmbSRVTurret },
-                { "srv_board", this.cmbSRVTurretAllowed },
-                { "srv_da", this.cmbSRVDriveAssist },
-                { "fsd_masslock", this.cmbMassLocked },
-                { "fsd_charge", this.cmbFSDCharging },
-                { "fsd_cool", this.cmbFSDCooldown },
-                { "low_fuel", this.cmbLowFuel },
-                { "overheat", this.cmbOverheating },
-                { "has_lat_long", this.cmbLatLong },
-                { "in_danger", this.cmbDanger },
-                { "interdiction", this.cmbInterdiction },
-                { "in_ship", this.cmbInMainShip },
-                { "in_fighter", this.cmbInFighter },
-                { "in_srv", this.cmbInSRV },
-                { "analysis_mode", this.cmbAnalysisMode },
-                { "nightvision", this.cmbNightvision },
-                { "alt_from_avg_radius", this.cmbOrbitalCruise },
-                { "fsd_jump", this.cmbFSDActivating },
-                { "srv_high_beam", this.cmbSRVHighBeam }
-            };
-
             List<int> available = AvailableDevices();
             if (Configuration.Data.DeviceId > 0 && !available.Contains(Configuration.Data.DeviceId))
             {
                 available.Add(Configuration.Data.DeviceId);
                 available.Sort();
             }
-            _targetItems.Clear();
+            targetItems.Clear();
             TargetDeviceItem selectedItem = null;
             foreach (int i in available)
             {
                 TargetDeviceItem item = new TargetDeviceItem(i);
-                _targetItems.Add(item);
-                if (i == Configuration.Data.DeviceId)
+                targetItems.Add(item);
+                if (item.Value == Configuration.Data.DeviceId)
+                {
                     selectedItem = item;
+                }
             }
-            cmbTarget.DataSource = new BindingSource(_targetItems, null);
             cmbTarget.DisplayMember = "Text";
             cmbTarget.ValueMember = "Value";
-            if (selectedItem != null)
-                cmbTarget.SelectedItem = selectedItem;
+            cmbTarget.DataSource = new BindingSource(targetItems, null);
+            cmbTarget.SelectedItem = selectedItem;
+            ((BindingSource)cmbTarget.DataSource).RaiseListChangedEvents = false;
 
-            UpdateButtons(Configuration.Data);
+            this.gridButtons1.DataSource = gridItems.GetRange(0, gridItems.Count / 2);
+            this.gridButtons2.DataSource = gridItems.GetRange(gridItems.Count / 2, gridItems.Count - (gridItems.Count / 2));
         }
 
         private List<int> AvailableDevices()
@@ -168,7 +133,7 @@ namespace EDStatus_Feeder
             return available;
         }
 
-        private void btnApply_Click(object sender, EventArgs e)
+        private void BtnApply_Click(object sender, EventArgs e)
         {
             if (cmbTarget.SelectedIndex < 0)
                 MessageBox.Show("Please select a target device", "ED Status Feeder");
@@ -176,16 +141,24 @@ namespace EDStatus_Feeder
                 this.Close();
 
             Configuration.Data.DeviceId = ((TargetDeviceItem)cmbTarget.SelectedItem).Value;
-            foreach (string flag in _flagSelections.Keys)
+            foreach (string flag in selectedButtons.Keys)
             {
-                Configuration.Data[flag] = _flagSelections[flag].SelectedIndex;
+                Configuration.Data[flag] = gridItems.Where(i => i.Key.Equals(flag)).First().Selection;
             }
         }
 
         private void ConfigurationDialog_Show(object sender, EventArgs e)
         {
-            btnApply.Focus();
+            foreach (var item in targetItems)
+            {
+                if (item.Value == Configuration.Data.DeviceId)
+                {
+                    cmbTarget.SelectedItem = item;
+                }
+            }
+            UpdateButtons(Configuration.Data);
             StatusChanged();
+            btnApply.Focus();
             EDStatusMonitor.MonitorInstance.Changed += StatusChanged;
         }
 
@@ -209,13 +182,28 @@ namespace EDStatus_Feeder
         }
         private void StatusChanged()
         {
-            foreach (string flag in _flagLabels.Keys)
+            foreach(DataGridViewRow row in gridButtons1.Rows)
             {
-                SetBold(_flagLabels[flag], EDStatusMonitor.MonitorInstance[flag] ? FontStyle.Bold : FontStyle.Regular);
+                string flag = (string)row.Cells["gridButtons1Key"].Value;
+                if(!flag.Equals("ignore"))
+                {
+                    DataGridViewCell label = row.Cells["gridButtons1ButtonName"];
+                    label.Style.Font = new Font(label.Style.Font ?? gridButtons1.Font, EDStatusMonitor.MonitorInstance[flag] ? FontStyle.Bold : FontStyle.Regular);
+                }
+            }
+
+            foreach (DataGridViewRow row in gridButtons2.Rows)
+            {
+                string flag = (string)row.Cells["gridButtons2Key"].Value;
+                if (!flag.Equals("ignore"))
+                {
+                    DataGridViewCell label = row.Cells["gridButtons2ButtonName"];
+                    label.Style.Font = new Font(label.Style.Font ?? gridButtons2.Font, EDStatusMonitor.MonitorInstance[flag] ? FontStyle.Bold : FontStyle.Regular);
+                }
             }
         }
 
-        private void cmbTarget_SelectedIndexChanged(object sender, EventArgs e)
+        private void CmbTarget_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateButtons();
         }
@@ -228,55 +216,61 @@ namespace EDStatus_Feeder
             int deviceId = ((TargetDeviceItem)cmbTarget.SelectedItem).Value;
             int buttons = vjoy.GetVJDButtonNumber((uint)deviceId);
 
-            if(config != null)
+            if (config != null)
             {
-                foreach (string flag in _flagSelections.Keys)
+                foreach (string flag in selectedButtons.Keys.ToArray())
                 {
-                    _selectedButtons[flag] = config[flag];
+                    selectedButtons[flag] = config[flag];
                 }
             }
             else
             {
-                foreach (string flag in _flagSelections.Keys)
+                foreach (string flag in selectedButtons.Keys.ToArray())
                 {
-                    _selectedButtons[flag] = _flagSelections[flag].SelectedIndex;
+                    selectedButtons[flag] = gridItems.Where(i => i.Key.Equals(flag)).First().Selection;
                 }
             }
 
-            _buttonItems.Clear();
+            buttonItems.Clear();
             for (int i=0; i<=buttons; i++)
             {
-                _buttonItems.Add(new ButtonItem(i));
+                buttonItems.Add(new ButtonItem(i));
             }
+            var buttonSelectionColumn1 = (DataGridViewComboBoxColumn)this.gridButtons1.Columns["gridButtons1Selection"];
+            buttonSelectionColumn1.DisplayMember = "Text";
+            buttonSelectionColumn1.ValueMember = "Value";
+            buttonSelectionColumn1.DataSource = buttonItems;
+            var buttonSelectionColumn2 = (DataGridViewComboBoxColumn)this.gridButtons2.Columns["gridButtons2Selection"];
+            buttonSelectionColumn2.DisplayMember = "Text";
+            buttonSelectionColumn2.ValueMember = "Value";
+            buttonSelectionColumn2.DataSource = buttonItems;
 
-            foreach (string flag in _flagSelections.Keys)
+            foreach (string flag in selectedButtons.Keys.ToArray())
             {
-                _flagSelections[flag].DataSource = new BindingSource(_buttonItems, null);
-                _flagSelections[flag].DisplayMember = "Text";
-                _flagSelections[flag].ValueMember = "Value";
-            }
-
-            foreach (string flag in _flagSelections.Keys)
-            {
-                if (_selectedButtons[flag] < _flagSelections[flag].Items.Count)
-                    _flagSelections[flag].SelectedIndex = _selectedButtons[flag];
-                if (_flagSelections[flag].SelectedIndex < 0)
-                    _flagSelections[flag].SelectedIndex = 0;
+                if (selectedButtons[flag] > buttons)
+                    selectedButtons[flag] = 0;
+                gridItems.Where(i => i.Key.Equals(flag)).First().Selection = selectedButtons[flag];
             }
         }
 
-        private void btnAutoSelect_Click(object sender, EventArgs e)
+        private void BtnAutoSelect_Click(object sender, EventArgs e)
         {
+            int deviceId = ((TargetDeviceItem)cmbTarget.SelectedItem).Value;
+            int buttons = vjoy.GetVJDButtonNumber((uint)deviceId);
             int index = 1;
-            foreach (string flag in _flagSelections.Keys)
+
+            foreach (string flag in selectedButtons.Keys)
             {
-                if (index < _flagSelections[flag].Items.Count)
-                    _flagSelections[flag].SelectedIndex = index;
+                if (index <= buttons)
+                    gridItems.Where(i => i.Key.Equals(flag)).First().Selection = index;
                 else
-                    _flagSelections[flag].SelectedIndex = 0;
+                    gridItems.Where(i => i.Key.Equals(flag)).First().Selection = 0;
 
                 index++;
             }
+
+            this.gridButtons1.InvalidateColumn(gridButtons1.Columns["gridButtons1Selection"].Index);
+            this.gridButtons2.InvalidateColumn(gridButtons2.Columns["gridButtons2Selection"].Index);
         }
 
         private void ConfigurationDialog_FormClosed(object sender, FormClosedEventArgs e)
@@ -286,6 +280,58 @@ namespace EDStatus_Feeder
                 MessageBox.Show("No target device saved. The ED Status Feeder application will now close.", "ED Status Feeder");
                 Application.Exit();
             }
+        }
+
+        private void GridButtons1_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var cell = gridButtons1.CurrentCell;
+            if (cell != null && cell.OwningColumn.Name.Equals("gridButtons1Selection"))
+            {
+                gridButtons1.BeginEdit(true);
+                ((ComboBox)gridButtons1.EditingControl).DroppedDown = true;
+            }
+        }
+
+        private void GridButtons1_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            var cell = gridButtons1.CurrentCell;
+            if (cell != null && cell.OwningColumn.Name.Equals("gridButtons1Selection"))
+            {
+                ((ComboBox)gridButtons1.EditingControl).DropDownClosed += GridButtons1_DropDownClosed;
+            }
+        }
+
+        private void GridButtons1_DropDownClosed(object sender, EventArgs e)
+        {
+            gridButtons1.CurrentCell = null;
+            ((ComboBox)sender).DropDownClosed -= GridButtons1_DropDownClosed;
+            gridButtons1.InvalidateColumn(gridButtons1Selection.Index);
+        }
+
+        private void GridButtons2_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var cell = gridButtons2.CurrentCell;
+            if (cell != null && cell.OwningColumn.Name.Equals("gridButtons2Selection"))
+            {
+                gridButtons2.BeginEdit(true);
+                ((ComboBox)gridButtons2.EditingControl).DroppedDown = true;
+            }
+        }
+
+        private void GridButtons2_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
+        {
+            var cell = gridButtons2.CurrentCell;
+            if (cell != null && cell.OwningColumn.Name.Equals("gridButtons2Selection"))
+            {
+                ((ComboBox)gridButtons2.EditingControl).DropDownClosed += GridButtons2_DropDownClosed;
+            }
+        }
+
+        private void GridButtons2_DropDownClosed(object sender, EventArgs e)
+        {
+            gridButtons2.CurrentCell = null;
+            ((ComboBox)sender).DropDownClosed -= GridButtons2_DropDownClosed;
+            gridButtons2.InvalidateColumn(gridButtons2Selection.Index);
         }
     }
 
@@ -336,5 +382,19 @@ namespace EDStatus_Feeder
         {
             return Text;
         }
+    }
+
+    class ButtonSelection
+    {
+        public ButtonSelection(string key, string name, int selection = 0)
+        {
+            this.Key = key;
+            this.ButtonName = name;
+            this.Selection = selection;
+        }
+
+        public string Key { get; set; }
+        public string ButtonName { get; set; }
+        public int Selection { get; set; }
     }
 }

@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Win32;
 
-namespace EDStatus_Feeder
+namespace EDStatusFeeder
 {
     class Configuration
     {
-        private static string key = "HKEY_CURRENT_USER\\Software\\ED Status Feeder";
-        private static Lazy<Configuration> _config = new Lazy<Configuration>(() => new Configuration());
-        private int _deviceId = 0;
-        private static Dictionary<string, int> _buttonConfig = new Dictionary<string, int>()
+        private static readonly string key = "HKEY_CURRENT_USER\\Software\\ED Status Feeder";
+        private static readonly Dictionary<string, int> buttonConfig = new Dictionary<string, int>()
             {
                 { "docked", 0 },
                 { "landed", 0 },
@@ -45,14 +42,16 @@ namespace EDStatus_Feeder
                 { "fsd_jump", 0 },
                 { "srv_high_beam", 0 }
             };
+        private static readonly Configuration config = new Configuration();
+        private int deviceId = 0;
 
         private Configuration()
         {
-            _deviceId = (int)(Registry.GetValue(key, "DeviceID", 0) ?? 0);
+            deviceId = (int)(Registry.GetValue(key, "DeviceID", 0) ?? 0);
 
-            foreach (string name in _buttonConfig.Keys.ToList())
+            foreach (string name in buttonConfig.Keys.ToList())
             {
-                _buttonConfig[name] = (int)(Registry.GetValue($"{key}\\Buttons", name, 0) ?? 0);
+                buttonConfig[name] = (int)(Registry.GetValue($"{key}\\Buttons", name, 0) ?? 0);
             }
         }
 
@@ -60,18 +59,18 @@ namespace EDStatus_Feeder
         {
             get
             {
-                return Configuration._config.Value;
+                return Configuration.config;
             }
         }
 
         public int DeviceId {
             get
             {
-                return _deviceId;
+                return deviceId;
             }
             set
             {
-                _deviceId = value;
+                deviceId = value;
                 Registry.SetValue(key, "DeviceID", value);
             }
         }
@@ -80,11 +79,11 @@ namespace EDStatus_Feeder
         {
             get
             {
-                return _buttonConfig[index];
+                return buttonConfig[index];
             }
             set
             {
-                _buttonConfig[index] = value;
+                buttonConfig[index] = value;
                 Registry.SetValue($"{key}\\Buttons", index, value);
             }
         }
@@ -93,7 +92,7 @@ namespace EDStatus_Feeder
         {
             get
             {
-                return new Dictionary<string, int>(_buttonConfig);
+                return new Dictionary<string, int>(buttonConfig);
             }
         }
     }

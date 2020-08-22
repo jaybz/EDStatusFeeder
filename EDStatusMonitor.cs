@@ -1,26 +1,19 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace EDStatus_Feeder
+namespace EDStatusFeeder
 {
     public delegate void ChangedEvent();
 
     class EDStatusMonitor
     {
         public event ChangedEvent Changed;
-        private static Lazy<EDStatusMonitor> _monitor = new Lazy<EDStatusMonitor>(() => new EDStatusMonitor());
 
-        public static string[] _flagNames = {
+        public static string[] flagNames = {
             "docked",
             "landed",
             "landing_gear",
@@ -55,15 +48,17 @@ namespace EDStatus_Feeder
             "srv_high_beam"
         };
 
-        private static Dictionary<string, bool> _flags = new Dictionary<string, bool>();
+        private static readonly Dictionary<string, bool> flags = new Dictionary<string, bool>();
 
-        private static FileSystemWatcher _watcher = new FileSystemWatcher();
+        private static readonly FileSystemWatcher watcher = new FileSystemWatcher();
+
+        private static readonly EDStatusMonitor monitor = new EDStatusMonitor();
 
         public static EDStatusMonitor MonitorInstance
         {
             get
             {
-                return EDStatusMonitor._monitor.Value;
+                return EDStatusMonitor.monitor;
             }
         }
 
@@ -75,9 +70,9 @@ namespace EDStatus_Feeder
         private EDStatusMonitor()
         {
             System.Diagnostics.Debug.WriteLine("Status Monitor Init");
-            foreach (string name in _flagNames)
+            foreach (string name in flagNames)
             {
-                _flags[name] = false;
+                flags[name] = false;
             }
 
             Guid guid = new Guid("{4C5C32FF-BB9D-43b0-B5B4-2D72E54EAAA4}");
@@ -86,11 +81,11 @@ namespace EDStatus_Feeder
                 string savedGamesPath = Marshal.PtrToStringUni(outPath);
                 Marshal.FreeCoTaskMem(outPath);
 
-                _watcher.Path = $"{savedGamesPath}\\Frontier Developments\\Elite Dangerous";
+                watcher.Path = $"{savedGamesPath}\\Frontier Developments\\Elite Dangerous";
                 UpdateFlags();
-                _watcher.Filter = "Status.json";
-                _watcher.Changed += StatusFileChanged;
-                _watcher.EnableRaisingEvents = true;
+                watcher.Filter = "Status.json";
+                watcher.Changed += StatusFileChanged;
+                watcher.EnableRaisingEvents = true;
             }
         }
 
@@ -116,7 +111,7 @@ namespace EDStatus_Feeder
             {
                 try
                 {
-                    statusJson = File.ReadAllText($"{_watcher.Path}\\Status.json");
+                    statusJson = File.ReadAllText($"{watcher.Path}\\Status.json");
                     break;
                 }
                 catch (IOException)
@@ -136,12 +131,12 @@ namespace EDStatus_Feeder
 
             System.Diagnostics.Debug.WriteLine($"Flags: {flagInt}");
 
-            for (int i = 0; i < _flagNames.Length; i++)
+            for (int i = 0; i < flagNames.Length; i++)
             {
-                string flagName = _flagNames[i];
+                string flagName = flagNames[i];
                 bool flag = (flagInt & (1 << i)) > 0;
                 if (flagName.Equals("fa_off")) flag = !flag;
-                _flags[flagName] = flag;
+                flags[flagName] = flag;
             }
         }
 
@@ -149,11 +144,11 @@ namespace EDStatus_Feeder
         {
             get
             {
-                return _flags[index];
+                return flags[index];
             }
             private set
             {
-                _flags[index] = value;
+                flags[index] = value;
             }
         }
 
@@ -161,7 +156,7 @@ namespace EDStatus_Feeder
         {
             get
             {
-                return new Dictionary<string, bool>(_flags);
+                return new Dictionary<string, bool>(flags);
             }
         }
     }

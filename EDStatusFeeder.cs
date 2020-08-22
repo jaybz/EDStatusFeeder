@@ -1,17 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using vJoyInterfaceWrap;
 
-namespace EDStatus_Feeder
+namespace EDStatusFeeder
 {
     class EDStatusFeeder : ApplicationContext
     {
-        private ConfigurationDialog configWindow = new ConfigurationDialog();
-        private NotifyIcon trayIcon;
-        private vJoy vJoy = new vJoy();
+        private readonly ConfigurationDialog configWindow = new ConfigurationDialog();
+        private readonly NotifyIcon trayIcon = new NotifyIcon()
+        {
+            Text = "ED Status Feeder",
+            BalloonTipTitle = "ED Status Feeder",
+            Icon = Resources.AppIcon,
+            Visible = true,
+        };
+        private readonly vJoy vJoy = new vJoy();
 
         public EDStatusFeeder()
         {
@@ -29,14 +32,7 @@ namespace EDStatus_Feeder
             menu.Items.Add(itemExit);
 
             // Initialize Tray Icon
-            trayIcon = new NotifyIcon()
-            {
-                Text = "ED Status Feeder",
-                BalloonTipTitle = "ED Status Feeder",
-                Icon = Resources.AppIcon,
-                ContextMenuStrip = menu,
-                Visible = true
-            };
+            trayIcon.ContextMenuStrip = menu;
             trayIcon.DoubleClick += Config;
 
             if (Configuration.Data.DeviceId == 0)
@@ -70,6 +66,7 @@ namespace EDStatus_Feeder
 
         void ShowConfigurationMenu()
         {
+            //configWindow.
             if (configWindow.Visible)
                 configWindow.Activate();
             else
